@@ -1,44 +1,48 @@
 
 # coding: utf-8
 
-# In[48]:
+# In[ ]:
 
 #Michael Timbes
 #Purpose:
 #Image_Classification Based on Logistic classification model. Single hidden layer, does not use convolutional layers
-#does not use pooling. May not be accurate for use when non-binary classification is needed.
+#does not use pooling.
 
 
-# In[49]:
+# In[ ]:
 
 import tensorflow as tf
 import numpy as np
 #Visualization
 import matplotlib.pyplot as plt
 #File import
+import filecmp as fcmp
 from os import listdir
 from os import path as opath
 from PIL import Image as PImage
 
 
-# In[50]:
+# In[ ]:
 
 #Path of test images
-path = ('testimgs')
+path = ('train_set')
 #Dimension of image
-IMAG_X = 20
+IMAG_X = 10
 
 #Trainig rate alpha
 alpha = 0.5
 
 #Number of inputs defined
-NUM_IN = (IMAG_X)
+NUM_IN = (IMAG_X**2)
 
 #Number of classifications
 y_out_clss = 2
 
+#Size of batch
+BatchSize = 2
 
-# In[51]:
+
+# In[ ]:
 
 #Import data
 def ImportImages(path):
@@ -60,40 +64,76 @@ def ImportImages(path):
     loadedImages = []
     
     loadedLabels = []
-    
+  
     new_size = IMAG_X, IMAG_X
+    
     for image in imagesList:
-        
-        img = PImage.open(path +'/'+ image).convert('LA')
+     
+        img = PImage.open(path +'/'+ image)
         #Pull file name from current image- use it as a label
         loadedLabels.append(opath.splitext(image)[0])
         img.load()
         #Resize step- ensures that all images follow.
         img.thumbnail(new_size, PImage.ANTIALIAS )
         loadedImages = np.asarray( img, dtype="int32" )
-        
     return loadedImages, loadedLabels
 
 
-# In[52]:
+# In[ ]:
 
-def create_batch(train_X, batch_size):
+def shape_up_X(train_X, IMAG_X):
+    """
+    shape_up_X(train_X, IMAG_X):
+    
+    Expects a 3D numpy array train_X with 
+    dimensions (width_val, height_val, image#).
+    Must be square matrix with and height being
+    equal.
+    Returns new_X which is a reshaped train_X
+    of type numpy array.
+    ____________________________________
+    Dimensions are (pixels, image#). The
+    size of the pixels dimension is taken from
+    the square of IMAG_X. The number of images are found
+    by taking the length of the third column.
+    """
+    num_exs = len(train_X[0,0,:])
+    new_X = train_X.reshape((IMAG_X**2, num_exs ))
+    return new_X
+
+
+# In[ ]:
+
+def create_batch(train_X, train_Y, start, batch_size):
     """
     def create_batch(train_X, batch_size):
     __________________________________________
     Function Outline:
-    1.
+    1.Checks to see if batch is too large.
+    2.Creates training subset of train_X and train_Y
     """
-    return 1
+    
+    if batch_size > len(train_X[0,:]):
+        print("Batch size can not be greater than total training examples.")
+        batch_x, batch_y = np.zeros(1,2)
+    else:
+        end_batch = start+batch_size
+        for i in range (start,end_batch):
+            batch_x = train_X[i]
+            batch_y = train_Y[i]
+    return batch_x, batch_y
 
 
-# In[53]:
+# In[ ]:
 
 train_X, train_Y = ImportImages(path)
+print(train_X.shape)
 print(train_Y)
+#train_X = shape_up_X(train_X,IMAG_X)
+#Num_to_Train = len(train_X)
 
 
-# In[54]:
+# In[ ]:
 
 #The x_input_layer and y_output_layer values are placeholders for the model that accept the flattened image (x) 
 #and then the ouput of theclassifications (y). 
@@ -108,14 +148,14 @@ Weights = tf.Variable(tf.zeros([NUM_IN, y_out_clss]))
 b = tf.Variable(tf.zeros([y_out_clss]))
 
 
-# In[55]:
+# In[ ]:
 
 #Outline of the model based on the probabilities calculated plus bias values.
 
 y_model = tf.matmul(x_input_layer, Weights) + b
 
 
-# In[56]:
+# In[ ]:
 
 #This is where the train steps happens. Cross entropy is calculated by running the current model and then running 
 #gradient decent. Training step stores results from the gradient descent minimizing cost function (cross_entropy).
@@ -126,16 +166,24 @@ cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels = 
 train_step = tf.train.GradientDescentOptimizer(alpha).minimize(cross_entropy)
 
 
-# In[57]:
+# In[ ]:
 
 #Init session and global variables
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
 
-# In[58]:
+# In[ ]:
 
 #Training block
-#for i in range(10): #Outside train loop
- #   train_step.run(feed_dict={x: batch[0], y_: batch[1]}) 
+for i in range(10): #Outside train loop
+    
+    #p = np.random.permutation(range(Num_to_Train))
+    #train_X, train_Y = train_X[p], train_Y[p]
+    
+    for start in range(0, Num_to_Train, BatchSize):
+        end = start + BatchSize
+        batch_x, batch_y = create_batch(train_X, train_Y, start, BatchSize)
+        print(batch_x, batch_y)
+    #train_step.run(feed_dict={x: batch_x, y_: batch_y}) 
 
