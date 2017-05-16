@@ -4,7 +4,7 @@ from os import path as opath
 from PIL import Image as PImage
 from PIL import ImageOps
 #Set Path to Directory
-path = 'test_set'
+path = 'images'
 new_size = 100,100
 dir_images = listdir(path)
 
