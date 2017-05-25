@@ -15,7 +15,7 @@ for image in dir_images:
     #GRAB FILE NAME
         f_name = opath.splitext(image)[0]
     #CONVERT TO GRAY SCALE
-        temp_file = temp_file.convert('1')
+        temp_file = temp_file.convert('L')
         #temp_file.resize(new_size)
         temp_file = ImageOps.fit(temp_file,(new_size),PImage.ANTIALIAS,0,(0.5,0.5))
         f_name = f_name +".bmp"
