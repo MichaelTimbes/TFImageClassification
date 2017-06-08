@@ -6,10 +6,10 @@ from PIL import Image as PImage
 from PIL import ImageOps
 
 #Set Path to Directory Source
-path = "CarSide"
+path = "faces"
 
 #Set Path to Directory Output
-outpath = "NotFace/"
+outpath = "Face/"
 
 #Set Resize Params
 new_size = 100,100
@@ -18,7 +18,7 @@ new_size = 100,100
 dir_images = listdir(path)
 
 #Set Classification Label
-class_name = "notface"
+class_name = "face"
 
 #Create Index Variable
 img_num = 0
@@ -35,7 +35,7 @@ for image in dir_images:
         #f_name = opath.splitext(image)[0]
         f_name = class_name + "_" + str(img_num)
     #CONVERT TO GRAY SCALE
-        temp_file = temp_file.convert('L')
+       # temp_file = temp_file.convert('L')
     #RESIZE
         temp_file = ImageOps.fit(temp_file,(new_size),PImage.ANTIALIAS,0,(0.5,0.5))
     #RENAME and SAVE
