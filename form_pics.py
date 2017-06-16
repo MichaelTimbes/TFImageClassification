@@ -152,19 +152,19 @@ if __name__ == '__main__':
 
     p = argparse.ArgumentParser(description="Prepares images for testing and training data set.")
 
-    p.add_argument("--s", "--source", metavar="images", dest="source", default="images",
+    p.add_argument("-s", "--source", metavar="images", dest="source", default="images",
                    help="Sets the source directory of images.")
-    p.add_argument("--tr", "--training", metavar="train_set", dest="training", default="train_set",
+    p.add_argument("-tr", "--training", metavar="train_set", dest="training", default="train_set",
                    help="Sets the training directory of images.")
-    p.add_argument("--te", "--testing", metavar="test_set", dest="testing", default="test_set",
+    p.add_argument("-te", "--testing", metavar="test_set", dest="testing", default="test_set",
                    help="Sets the training directory of images.")
-    p.add_argument("--h", "--height", metavar="100", dest="height", default="100",
+    p.add_argument("-he", "--height", metavar="100", dest="height", default="100",
                    help="Sets the height of each image.")
-    p.add_argument("--w", "--width", metavar="100", dest="width", default="100",
+    p.add_argument("-wi", "--width", metavar="100", dest="width", default="100",
                    help="Sets the width of each image.")
-    p.add_argument("--p", "--trainprob", metavar="0.75", dest="probability", default="0.75",
+    p.add_argument("-p", "--trainprob", metavar="0.75", dest="probability", default="0.75",
                    help="Probability that an image will be put into the training set.")
-    p.add_argument("--m", "--mode", metavar="L", dest="colormode", default="L",
+    p.add_argument("-m", "--mode", metavar="L", dest="colormode", default="L",
                    help="Sets the color mode of each image. 1=BW, L=Gray, RGB=Color, RGBA=Color with transparency")
     options = p.parse_args()
 
