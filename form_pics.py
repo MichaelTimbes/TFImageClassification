@@ -46,7 +46,7 @@ def prepareImage(fullImagePath, width, height, colormode):
 
 def randomizeImages(sourcePath):
     """
-    Reads in all files on a path, assumes that the files are images,
+    Reads in all files on a path, takes the ones ending with jpg, bmp, or png,
     then adds all of the non-hidden files to a list and randomizes the list.
 
     Precondition: none
@@ -58,7 +58,7 @@ def randomizeImages(sourcePath):
     """
     images = []
     for image in listdir(sourcePath):
-        if not image.startswith("."):
+        if not image.startswith(".") and (image.endswith("jpg") or image.endswith("bmp") or image.endswith("png")):
             images.append(image) 
 
     random.shuffle(images)
@@ -137,7 +137,6 @@ def sortImages(sourcePath, trainingPath, testPath, width, height, probability, c
     probability: The percentage of desired training images
     colormode: color mode of the modified images (according to PIL)
     """
-
 
     assert width > 0
     assert height > 0
