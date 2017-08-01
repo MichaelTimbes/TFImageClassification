@@ -5,7 +5,7 @@ from os import path as opath
 from skimage import io, color
 from PIL import Image as PImage
 
-def ImportImages(path, width, height, keyA, keyB):
+def ImportImages(path, width, height, keyA, keyB, colortype='rgb'):
     """
     Images must be in RGB space.
     ________________________________________________________________
@@ -27,7 +27,7 @@ def ImportImages(path, width, height, keyA, keyB):
     
     for image in imagesList:
         if not(".DS_Store" in path +'/'+ image): #Issue in Mac File System
-            (img, label) = loadImage(path, image)
+            (img, label) = loadImage(path, image, colortype)
             loadedImages.append(np.asarray( img, dtype="int32" ))
             originalLabels.append(label)
         
@@ -40,19 +40,21 @@ def ImportImages(path, width, height, keyA, keyB):
 
     return np.asarray(loadedImages), np.asarray(loadedLabels), originalLabels
 
-def loadImage(path, image):
+def loadImage(path, image, colortype='rgb'):
     img = PImage.open(path + '/' + image)
     label = opath.splitext(image)[:]
 
     # Pull file name from current image- use it as a label
     img.load()
 
+    if colortype == 'lab':
+        color.rgb2lab(img)
+
     # Resize step- ensures that all images follow.
     #img.thumbnail(new_size, PImage.ANTIALIAS )
     #img.convert('1')
     #img.resize(new_size)
     return (img, label[0])
-
 
 def shape_up3d(data, width):
     """
