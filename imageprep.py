@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 from os import listdir
 from os import path as opath
+from skimage import io, color
 from PIL import Image as PImage
 
 def ImportImages(path, width, height, keyA, keyB):
@@ -26,17 +27,7 @@ def ImportImages(path, width, height, keyA, keyB):
     
     for image in imagesList:
         if not(".DS_Store" in path +'/'+ image): #Issue in Mac File System
-            img = PImage.open(path +'/'+ image)
-            label = opath.splitext(image)[:]
-        
-            # Pull file name from current image- use it as a label
-            originalLabels.append(label[0])
-            img.load()
-
-            # Resize step- ensures that all images follow.
-            #img.thumbnail(new_size, PImage.ANTIALIAS )
-            #img.convert('1')
-            #img.resize(new_size)
+            img = loadImage(path + '/' + image)
             loadedImages.append(np.asarray( img, dtype="int32" ))
         
     # Convert to Binary Classification.
@@ -47,6 +38,21 @@ def ImportImages(path, width, height, keyA, keyB):
             loadedLabels.append([0, 1])
 
     return np.asarray(loadedImages), np.asarray(loadedLabels), originalLabels
+
+def loadImage(filename):
+    img = PImage.open(filename)
+    label = opath.splitext(image)[:]
+
+    # Pull file name from current image- use it as a label
+    originalLabels.append(label[0])
+    img.load()
+
+    # Resize step- ensures that all images follow.
+    #img.thumbnail(new_size, PImage.ANTIALIAS )
+    #img.convert('1')
+    #img.resize(new_size)
+    return img
+
 
 def shape_up3d(data, width):
     """
