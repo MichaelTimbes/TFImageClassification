@@ -27,8 +27,9 @@ def ImportImages(path, width, height, keyA, keyB):
     
     for image in imagesList:
         if not(".DS_Store" in path +'/'+ image): #Issue in Mac File System
-            img = loadImage(path + '/' + image)
+            (img, label) = loadImage(path, image)
             loadedImages.append(np.asarray( img, dtype="int32" ))
+            originalLabels.append(label)
         
     # Convert to Binary Classification.
     for originalLabel in originalLabels:
@@ -39,19 +40,18 @@ def ImportImages(path, width, height, keyA, keyB):
 
     return np.asarray(loadedImages), np.asarray(loadedLabels), originalLabels
 
-def loadImage(filename):
-    img = PImage.open(filename)
+def loadImage(path, image):
+    img = PImage.open(path + '/' + image)
     label = opath.splitext(image)[:]
 
     # Pull file name from current image- use it as a label
-    originalLabels.append(label[0])
     img.load()
 
     # Resize step- ensures that all images follow.
     #img.thumbnail(new_size, PImage.ANTIALIAS )
     #img.convert('1')
     #img.resize(new_size)
-    return img
+    return (img, label[0])
 
 
 def shape_up3d(data, width):
