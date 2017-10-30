@@ -58,7 +58,7 @@ def randomizeImages(sourcePath):
     """
     images = []
     for image in listdir(sourcePath):
-        if not image.startswith(".") and (image.endswith("jpg") or image.endswith("bmp") or image.endswith("png")):
+        if not image.startswith(".") and (image.endswith("jpeg") or image.endswith("bmp") or image.endswith("png")):
             images.append(image) 
 
     random.shuffle(images)
@@ -84,6 +84,7 @@ def divideImages(images, probability):
     trainingImages = []
     testImages = []
     trainingImageCount = int(probability * len(images))
+    
     i = 0
     for image in images:
         if i <= trainingImageCount:
@@ -141,7 +142,7 @@ def sortImages(sourcePath, trainingPath, testPath, width, height, probability, c
     assert width > 0
     assert height > 0
     assert probability > 0 and probability < 1
-
+    
     images = randomizeImages(sourcePath)
     (trainingImages, testImages) = divideImages(images, probability)
     prepareAndStoreImages(trainingImages, sourcePath, trainingPath, width, height, colormode)
